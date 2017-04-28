@@ -2,7 +2,9 @@
 
 
 def get_last_number(number):
-    """Returns the last number Bealtrix will name before falling asleep"""
+    """
+    Returns the last number Bealtrix will name before falling asleep
+    """
 
     # Bealtrix never fall asleep.
     if number == 0:
@@ -21,7 +23,6 @@ def get_last_number(number):
 
 
 if __name__ == '__main__':
-
     with open('c-input.in') as tests_file:
         tests = tests_file.readlines()
 
