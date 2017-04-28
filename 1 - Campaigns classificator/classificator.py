@@ -79,7 +79,7 @@ def get_best_campaign(campaigns, user):
     # General Filters
     filtered = None
     for _filter in filters:
-        filtered = _filter(campaigns, user)
+        filtered = list(_filter(campaigns, user))
         if len(filtered) == 0:
             return None
         campaigns = filtered
