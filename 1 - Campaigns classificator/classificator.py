@@ -11,12 +11,12 @@ def load_campaigns():
     return json.load(open('campaigns.json'))
 
 
-def filter_by_plataform(campaigns):
+def filter_by_plataform(campaigns, user):
     # Filter the campaigns for platform
     return filter(lambda x: x['platform'] == user['platform'], campaigns)
 
 
-def filter_by_gender(campaigns):
+def filter_by_gender(campaigns, user):
     # Filter the campaigns for gender
     return filter(
         lambda x:
@@ -26,7 +26,7 @@ def filter_by_gender(campaigns):
     )
 
 
-def filter_by_age(campaigns):
+def filter_by_age(campaigns, user):
     # Filter the campaigns for age
     return filter(
         lambda x:
@@ -36,7 +36,7 @@ def filter_by_age(campaigns):
     )
 
 
-def filter_by_connection(campaigns):
+def filter_by_connection(campaigns, user):
     # Filter the campaigns for connection
     return filter(
         lambda x:
@@ -47,6 +47,8 @@ def filter_by_connection(campaigns):
 
 
 def filter_by_age_range(campaigns):
+    # Filters the campaigns by age range and returns that which has the
+    # age range closer to the user age.
     campaing_age_ranges = []
     for campaign in campaigns:
         if (campaign['max_age'] and campaign['min_age']) is None:
@@ -56,40 +58,75 @@ def filter_by_age_range(campaigns):
     if len(campaing_age_ranges) == 0:
         return campaing_age_ranges
     elif len(campaing_age_ranges) > 1:
-        return reduce(
+        selected = reduce(
             lambda x, y:
-                x if (x['max_age'] - x['min_age']) < (y['max_age'] - y['min_age']) else y,
+                x if (x['max_age'] - x['min_age']) <
+                     (y['max_age'] - y['min_age']) else y,
             campaing_age_ranges
         )
+        return [selected]
 
-
+# General Filters
 filters = [
     filter_by_plataform,
     filter_by_gender,
     filter_by_age,
     filter_by_connection,
-    filter_by_age_range
 ]
 
 
 def get_best_campaign(campaigns, user):
-    best_campaign = None
 
-    selected = []
+    # General Filters
+    filtered = None
     for _filter in filters:
-        selected = _filter(campaigns)
-        if len(selected) == 0:
-            return best_campaign
-        elif len(selected) == 1:
-            return selected[0]
+        filtered = _filter(campaigns, user)
+        if len(filtered) == 0:
+            return None
+        # elif len(filtered) == 1:
+        #     return filtered[0]
         else:
-            campaigns = selected
+            campaigns = filtered
+
+    # If there are one or more campaigns, tries to filter them by the age range
+    # closest to user age.
+    if len(filtered) > 1:
+        filtered_by_age_range = []
+        if filter_by_age_range(filtered):
+            filtered_by_age_range = filter_by_age_range(filtered)
+        filtered = filtered_by_age_range if filtered_by_age_range else filtered
+
+    # Next, if there are one or more campaigns, tries to filter them by the
+    # user gender.
+    if len(filtered) > 1:
+        filtered_by_gender = []
+        for campaign in filtered:
+            if campaign['gender'] == user['gender']:
+                filtered_by_gender.append(campaign)
+        filtered = filtered_by_gender if filtered_by_gender else filtered
+
+    # Finally, if there are one or more campaigns, tries to filter them by
+    # the user connection.
+    if len(filtered) > 1:
+        filtered_by_connection = []
+        for campaign in filtered:
+            if campaign['connection'] == user['connection']:
+                filtered_by_connection.append(campaign)
+        filtered = filtered_by_connection if filtered_by_connection else filtered
+
+    # If after you applied all the filter there are more than one campaings,
+    # then selects the first one.
+    if len(filtered) >= 1:
+        filtered = filtered[0]
+    else:
+        filtered = None
+
+    return filtered
 
 
 if __name__ == '__main__':
 
     campaigns = load_campaigns()
     user = load_user()
-
     best_campaign = get_best_campaign(campaigns, user)
     print(best_campaign)
