@@ -83,13 +83,10 @@ def get_best_campaign(campaigns, user):
         filtered = _filter(campaigns, user)
         if len(filtered) == 0:
             return None
-        # elif len(filtered) == 1:
-        #     return filtered[0]
-        else:
-            campaigns = filtered
+        campaigns = filtered
 
     # If there are one or more campaigns, tries to filter them by the age range
-    # closest to user age.
+    # closer to user age.
     if len(filtered) > 1:
         filtered_by_age_range = []
         if filter_by_age_range(filtered):
@@ -105,7 +102,7 @@ def get_best_campaign(campaigns, user):
                 filtered_by_gender.append(campaign)
         filtered = filtered_by_gender if filtered_by_gender else filtered
 
-    # Finally, if there are one or more campaigns, tries to filter them by
+    # Next, if there are one or more campaigns, tries to filter them by
     # the user connection.
     if len(filtered) > 1:
         filtered_by_connection = []
@@ -114,8 +111,8 @@ def get_best_campaign(campaigns, user):
                 filtered_by_connection.append(campaign)
         filtered = filtered_by_connection if filtered_by_connection else filtered
 
-    # If after you applied all the filter there are more than one campaings,
-    # then selects the first one.
+    # Finally, if after you applied all the filter there are more than one
+    # campaings, then selects the first one.
     if len(filtered) >= 1:
         filtered = filtered[0]
     else:
