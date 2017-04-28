@@ -76,7 +76,6 @@ filters = [
 
 
 def get_best_campaign(campaigns, user):
-
     # General Filters
     filtered = None
     for _filter in filters:
@@ -122,7 +121,6 @@ def get_best_campaign(campaigns, user):
 
 
 if __name__ == '__main__':
-
     campaigns = load_campaigns()
     user = load_user()
     best_campaign = get_best_campaign(campaigns, user)

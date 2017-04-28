@@ -44,7 +44,6 @@ def convert_currency(amount, _from, to):
 
 
 def get_total_profit(campaign):
-
     # Calcuate the profit of the campaign
     profit = campaign['revenue'] - campaign['cost']
 
@@ -73,7 +72,6 @@ def generate_total_profits_report(campaings):
 
 
 if __name__ == '__main__':
-
     campaigns = load_daily_report()
     final_report = generate_total_profits_report(campaigns)
     print(final_report)
