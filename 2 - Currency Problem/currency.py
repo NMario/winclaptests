@@ -1,5 +1,4 @@
-#! /usr/bin/python3
-
+#!/usr/bin/python3
 from html.parser import HTMLParser
 import re
 import json

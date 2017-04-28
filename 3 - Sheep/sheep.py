@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 
 def get_last_number(number):
     """Returns the last number Bealtrix will name before falling asleep"""
